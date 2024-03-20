@@ -21,6 +21,9 @@ class VoiceAssistant:
         self.warm_up_microphone()
 
     def run(self):
+        """
+        Runs the voice assistant, continuously listening for wake words and managing conversations.
+        """
         print("Voice Assistant activated. Say 'Hey Red' to begin.")
         while True:
             with sr.Microphone() as source:
@@ -42,9 +45,25 @@ class VoiceAssistant:
                     print(f"Could not request results; {e}")
 
     def is_wake_word_detected(self, audio_text, wake_word="hey red"):
+        """
+        Checks if the wake word is detected in the audio text.
+
+        Args:
+            audio_text (str): The text obtained from speech recognition.
+            wake_word (str): The wake word to detect.
+
+        Returns:
+            bool: True if the wake word is detected, False otherwise.
+        """
         return wake_word in audio_text.lower()
     
     def warm_up_microphone(self, warm_up_cycles=4):
+        """
+        Warms up the microphone to prepare for speech recognition.
+
+        Args:
+            warm_up_cycles (int): The number of warm-up cycles.
+        """
         with sr.Microphone() as source:
             for _ in range(warm_up_cycles):
                 self.recognizer.adjust_for_ambient_noise(source, duration=0.5)  # Adjusting for ambient noise each time
@@ -56,6 +75,12 @@ class VoiceAssistant:
                     continue
 
     def get_language_code(self):
+        """
+        Prompts the user to choose a language and returns its code.
+
+        Returns:
+            list: A list containing the language code and name.
+        """
         print("Please choose a language.")
         for _ in range(3):  # Maximum 3 retries
             with sr.Microphone() as source:
@@ -77,6 +102,34 @@ class VoiceAssistant:
         return None
 
     def conduct_conversation(self, language_code):
+        """
+        Conducts a conversation with the user in the specified language.
+
+        This method continuously listens for user input, processes it, and generates a response using OpenAI's GPT models.
+        It handles language translation, language switching, and termination of the conversation based on user commands.
+
+        Args:
+            language_code (list): A list containing the language code and name.
+
+        Raises:
+            UnknownValueError: If the speech recognizer cannot understand the audio.
+            WaitTimeoutError: If there's a timeout while waiting for audio input.
+            RequestError: If there's an error while making a request to the speech
+                recognition service.
+
+        Returns:
+            None
+
+        Example:
+            To conduct a conversation in English, the `language_code` argument can be
+            set to ('en-US', 'en'). The method will listen for user input, process it,
+            generate responses, and play back the translated responses in English.
+
+        Note:
+            This method relies on the availability of the necessary components, including
+            the speech recognizer, translation service, and OpenAI GPT model. Ensure that
+            these components are properly initialized before calling this method.
+        """
         print(f"Conversation started in {language_code}. Speak your query.")
         assistance_messages = [
             "Let me know if you need anything else.",
