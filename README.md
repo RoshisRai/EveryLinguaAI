@@ -70,6 +70,10 @@ OPENAI_API_KEY=YourOpenAIApiKeyHere
 Optional voice settings:
 
 ```plaintext
+# OpenAI response cost control
+OPENAI_MAX_OUTPUT_TOKENS=120
+OPENAI_SYSTEM_PROMPT=You are a concise multilingual voice assistant. Keep answers brief and practical.
+
 # Microphone selection
 VOICE_MIC_INDEX=2
 
@@ -93,9 +97,20 @@ VOICE_DEBUG=0
 
 Notes:
 
+- `OPENAI_MAX_OUTPUT_TOKENS` sets a hard cap for assistant response size and helps control API costs.
+- `OPENAI_SYSTEM_PROMPT` lets you override the default concise system instruction used by the OpenAI client.
 - `VOICE_MIC_INDEX` lets you lock to a specific input device. If omitted, the app auto-selects a likely microphone.
 - Set `VOICE_DEBUG=1` to show debug logs (including mic state transitions and wake transcripts).
 - `VOICE_AUTO_SWITCH_MIC=1` enables automatic fallback to the next microphone after repeated timeouts.
+
+### Response Cost Control
+
+The OpenAI client uses two settings to reduce usage costs:
+
+- `OPENAI_MAX_OUTPUT_TOKENS`: Hard upper bound for generated output tokens per response.
+- `OPENAI_SYSTEM_PROMPT`: System instruction used to keep replies concise.
+
+If these are not set, the app uses safe defaults from the client implementation.
 
 ### Running EveryLinguaAI
 
