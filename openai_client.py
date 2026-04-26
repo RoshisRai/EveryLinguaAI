@@ -8,14 +8,17 @@ class OpenAIClient:
     def __init__(self, api_key):
         self.client = OpenAI(api_key=api_key)
 
-    def chat_with_gpt(self, promt):
+    def chat_with_gpt(self, prompt):
         response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "user", "content": promt}
+                {"role": "user", "content": prompt}
             ]
         )
-        return response.choices[0].message.content.strip()
+        content = response.choices[0].message.content
+        if isinstance(content, str):
+            return content.strip()
+        return ""
     
     def text_to_speech(self, text):
         response = self.client.audio.speech.create(

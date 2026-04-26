@@ -3,6 +3,21 @@
 
 EveryLinguaAI is a voice assistant application capable of recognizing and responding to spoken commands in multiple languages. It utilizes the Google Speech Recognition API for speech-to-text conversion, Deep Translator for seamless language translation, and leverages OpenAI's GPT models to generate human-like conversational responses.
 
+## Project Structure
+
+The codebase is now split into focused modules for easier maintenance:
+
+- `main.py`: Application entrypoint.
+- `voice_assistant.py`: High-level orchestration (wake loop + handoff to conversation).
+- `config.py`: Environment-based runtime configuration.
+- `assistant_logger.py`: Info/error/debug logging helpers.
+- `wakeword.py`: Wake-word normalization and fuzzy matching.
+- `speech_io.py`: Microphone selection, calibration, capture, and STT utilities.
+- `conversation.py`: Language selection and conversation flow.
+- `openai_client.py`: OpenAI chat + text-to-speech API integration.
+- `languages.py`: Supported language mapping.
+- `audio.py`: Audio playback helpers.
+
 ## Features
 
 - **Wake Word Detection**: Activates the assistant using a specific wake word.
@@ -44,10 +59,43 @@ pip install -r requirements.txt
 
 - Obtain an API key from OpenAI.
 - Create a `.env` file in the project root directory.
-- Add the following line to your `.env` file:
-  ```plaintext
-  OPENAI_API_KEY=YourOpenAIApiKeyHere
-  ```
+- Add the required key and any optional settings below.
+
+Required:
+
+```plaintext
+OPENAI_API_KEY=YourOpenAIApiKeyHere
+```
+
+Optional voice settings:
+
+```plaintext
+# Microphone selection
+VOICE_MIC_INDEX=2
+
+# Recognition sensitivity
+VOICE_ENERGY_THRESHOLD=300
+VOICE_MIN_ENERGY_THRESHOLD=120
+VOICE_MAX_ENERGY_THRESHOLD=700
+
+# Timing (seconds)
+VOICE_WAKE_TIMEOUT=15
+VOICE_WAKE_PHRASE_LIMIT=8
+VOICE_LANGUAGE_TIMEOUT=12
+VOICE_LANGUAGE_PHRASE_LIMIT=8
+VOICE_QUERY_TIMEOUT=15
+VOICE_QUERY_PHRASE_LIMIT=12
+
+# Behavior toggles
+VOICE_AUTO_SWITCH_MIC=1
+VOICE_DEBUG=0
+```
+
+Notes:
+
+- `VOICE_MIC_INDEX` lets you lock to a specific input device. If omitted, the app auto-selects a likely microphone.
+- Set `VOICE_DEBUG=1` to show debug logs (including mic state transitions and wake transcripts).
+- `VOICE_AUTO_SWITCH_MIC=1` enables automatic fallback to the next microphone after repeated timeouts.
 
 ### Running EveryLinguaAI
 
@@ -72,6 +120,13 @@ To begin interacting with EveryLinguaAI, activate it by saying the wake word "He
 3. **Language Switching:** If you wish to switch languages during the conversation, simply utter one of the predefined language-switching commands in the language you are currently using or in English. The voice assistant will prompt you to specify the new language, allowing you to seamlessly transition between languages as needed.
 
 4. **Ending Interaction:** To stop asking questions and deactivate the voice assistant, say commands like "stop listening," "no more," "that's all," or "nothing else." You can reactivate the voice assistant at any time by saying the wake word again.
+
+Current stop phrases used in code:
+
+- "stop listening"
+- "no"
+- "that's all"
+- "nothing else"
 
 Feel free to explore the capabilities of the EveryLinguaAI by asking questions, switching languages, and interacting in various scenarios. Enjoy the convenience of a versatile and multilingual conversational experience with EveryLinguaAI Voice Assistant!
 
